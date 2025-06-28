@@ -1,0 +1,10 @@
+artifact_location: file:///D:/Document/PROYEK/Dicoding/MSML/Workflow-CI/MLProject/mlruns/628145019427071225/models/m-ec8944e8ac2a4f05aff678c90e775c28/artifacts
+creation_timestamp: 1751140775979
+experiment_id: '628145019427071225'
+last_updated_timestamp: 1751140781100
+model_id: m-ec8944e8ac2a4f05aff678c90e775c28
+model_type: null
+name: model
+source_run_id: 17e2f18be71d493ab033d0df310ca7e4
+status: 2
+status_message: null

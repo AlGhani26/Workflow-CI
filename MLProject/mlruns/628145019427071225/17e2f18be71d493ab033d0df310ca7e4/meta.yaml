@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Document/PROYEK/Dicoding/MSML/Workflow-CI/MLProject/mlruns/628145019427071225/17e2f18be71d493ab033d0df310ca7e4/artifacts
+end_time: 1751140781240
+entry_point_name: ''
+experiment_id: '628145019427071225'
+lifecycle_stage: active
+run_id: 17e2f18be71d493ab033d0df310ca7e4
+run_name: defiant-seal-443
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751140775390
+status: 3
+tags: []
+user_id: algha

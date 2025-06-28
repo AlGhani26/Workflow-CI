@@ -1,0 +1,1 @@
+mlflow run . -e train -P data_path=personality_preprocessing_dataset.csv -P model_output=models/personality_model.pkl
