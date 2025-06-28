@@ -1,0 +1,86 @@
+name: Workflow CI  
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  train_and_upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn mlflow
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f MLProject/requirements.txt ]; then pip install -r MLProject/requirements.txt; fi
+
+      - name: Prepare dummy dataset
+        working-directory: ./MLProject
+        run: |
+          mkdir -p data models
+          echo "feature1,feature2,Personality" > data/personality_preprocessing_dataset.csv
+          echo "1.0,2.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "2.0,3.0,1" >> data/personality_preprocessing_dataset.csv
+          echo "3.0,4.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
+
+      - name: Run MLflow project
+        working-directory: ./MLProject
+        run: |
+          mlflow run . \
+            -e train \
+            -P data_path=data/personality_preprocessing_dataset.csv \
+            -P model_output=models/personality_model.pkl \
+            -P test_size=0.2 \
+            -P random_state=42
+
+      - name: Upload model to Google Drive (optional)
+        if: env.GOOGLE_DRIVE_CREDENTIALS != ''
+        env:
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+        run: |
+          echo "$GOOGLE_DRIVE_CREDENTIALS" > service-account.json
+          pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
+          python -c '
+import os
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+from google.oauth2 import service_account
+
+SERVICE_ACCOUNT_FILE = "service-account.json"
+SCOPES = ["https://www.googleapis.com/auth/drive"]
+
+credentials = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES
+)
+drive_service = build("drive", "v3", credentials=credentials)
+
+file_path = "MLProject/models/personality_model.pkl"
+file_metadata = {"name": "personality_model.pkl"}
+
+media = MediaFileUpload(file_path, resumable=True)
+file = drive_service.files().create(
+    body=file_metadata,
+    media_body=media,
+    fields="id"
+).execute()
+
+print(f"✅ Uploaded to Google Drive with ID: {file.get('id')}")
+'
+
+      - name: Done
+        run: echo "🎉 Workflow CI selesai untuk repo 'Workflow-CI'!"
