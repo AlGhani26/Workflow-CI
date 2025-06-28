@@ -31,18 +31,18 @@ jobs:
         working-directory: ./MLProject
         run: |
           mkdir -p data models
-          echo "feature1,feature2,Personality" > data/personality_preprocessing_dataset.csv
-          echo "1.0,2.0,0" >> data/personality_preprocessing_dataset.csv
-          echo "2.0,3.0,1" >> data/personality_preprocessing_dataset.csv
-          echo "3.0,4.0,0" >> data/personality_preprocessing_dataset.csv
-          echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
+          echo "feature1,feature2,Personality" > personality_preprocessing_dataset.csv
+          echo "1.0,2.0,0" >> personality_preprocessing_dataset.csv
+          echo "2.0,3.0,1" >> personality_preprocessing_dataset.csv
+          echo "3.0,4.0,0" >> personality_preprocessing_dataset.csv
+          echo "4.0,5.0,1" >> personality_preprocessing_dataset.csv
 
       - name: Run MLflow project
         working-directory: ./MLProject
         run: |
           mlflow run . \
             -e train \
-            -P data_path=data/personality_preprocessing_dataset.csv \
+            -P data_path=personality_preprocessing_dataset.csv \
             -P model_output=models/personality_model.pkl \
             -P test_size=0.2 \
             -P random_state=42
