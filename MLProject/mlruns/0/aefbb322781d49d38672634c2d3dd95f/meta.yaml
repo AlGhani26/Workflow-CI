@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Document/PROYEK/Dicoding/MSML/Workflow-CI/MLProject/mlruns/0/aefbb322781d49d38672634c2d3dd95f/artifacts
+end_time: 1751242568590
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: aefbb322781d49d38672634c2d3dd95f
+run_name: valuable-gnat-835
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751242551622
+status: 3
+tags: []
+user_id: algha

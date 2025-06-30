@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Document/PROYEK/Dicoding/MSML/Workflow-CI/MLProject/mlruns/861503600981366888/6d58ac71b4e24dca893e2036a7ab1b50/artifacts
+end_time: 1751242568196
+entry_point_name: ''
+experiment_id: '861503600981366888'
+lifecycle_stage: active
+run_id: 6d58ac71b4e24dca893e2036a7ab1b50
+run_name: chill-roo-393
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1751242562359
+status: 3
+tags: []
+user_id: algha
