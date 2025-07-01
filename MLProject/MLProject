@@ -1,7 +1,5 @@
 name: personality-classification
 
-conda_env: conda.yaml
-
 entry_points:
   train:
     parameters:
