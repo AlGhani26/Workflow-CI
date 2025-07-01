@@ -22,7 +22,8 @@ jobs:
 
       - name: Install MLflow and dependencies
         run: |
-          pip install mlflow scikit-learn pandas
+          pip install --upgrade pip
+          pip install mlflow==3.1.1 scikit-learn pandas
 
       - name: Prepare dummy dataset
         working-directory: ./MLProject
