@@ -36,20 +36,24 @@ jobs:
         shell: bash -l {0}
         working-directory: ./MLProject
         run: |
-          mkdir -p data models
+          mkdir -p models
           echo "Ensuring data exists for demonstration"
-          if [ -f "data/preprocessed_data.csv" ]; then
+          if [ -f "personality_preprocessing_dataset.csv" ]; then
             echo "Using existing preprocessed data"
           else
             echo "Creating sample data for demonstration"
-            echo "feature1,feature2,Personality" > data/personality_preprocessing_dataset.csv
-            echo "1.0,2.0,0" >> data/personality_preprocessing_dataset.csv
-            echo "2.0,3.0,1" >> data/personality_preprocessing_dataset.csv
-            echo "3.0,4.0,0" >> data/personality_preprocessing_dataset.csv
-            echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
+            echo "feature1,feature2,Personality" > personality_preprocessing_dataset.csv
+            echo "1.0,2.0,0" >> personality_preprocessing_dataset.csv
+            echo "2.0,3.0,1" >> personality_preprocessing_dataset.csv
+            echo "3.0,4.0,0" >> personality_preprocessing_dataset.csv
+            echo "4.0,5.0,1" >> personality_preprocessing_dataset.csv
           fi
           # Run MLflow Project
-          mlflow run . -e train -P data_path=data/personality_preprocessing_dataset.csv
+          python modelling.py \
+            --data_path=personality_preprocessing_dataset.csv \
+            --model_output=models/model.pkl \
+            --test_size=0.2 \
+            --random_state=42
 
       - name: Get latest MLflow run_id
         working-directory: ./MLProject
