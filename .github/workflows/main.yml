@@ -38,7 +38,7 @@ jobs:
       - name: Run MLflow project (training model)
         working-directory: ./MLProject
         run: |
-          mlflow run . -e train --no-conda
+          mlflow run . -e train
 
       - name: Done
         run: echo "🎉 Workflow CI retraining selesai!"
