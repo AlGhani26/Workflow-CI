@@ -36,14 +36,15 @@ jobs:
         shell: bash -l {0}
         working-directory: ./MLProject
         run: |
-          echo "feature1,feature2,Personality" > personality_preprocessing_dataset.csv
-          echo "1.0,2.0,0" >> personality_preprocessing_dataset.csv
-          echo "2.0,3.0,1" >> personality_preprocessing_dataset.csv
-          echo "3.0,4.0,0" >> personality_preprocessing_dataset.csv
-          echo "4.0,5.0,1" >> personality_preprocessing_dataset.csv
+          mkdir -p data models
+          echo "feature1,feature2,Personality" > data/personality_preprocessing_dataset.csv
+          echo "1.0,2.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "2.0,3.0,1" >> data/personality_preprocessing_dataset.csv
+          echo "3.0,4.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
 
           # Run MLflow Project
-          mlflow run . -e train -P data_path=personality_preprocessing_dataset.csv
+          mlflow run . -e train -P data_path=data/personality_preprocessing_dataset.csv
 
       - name: Get latest MLflow run_id
         working-directory: ./MLProject
