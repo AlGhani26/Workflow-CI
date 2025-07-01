@@ -49,11 +49,7 @@ jobs:
             echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
           fi
           # Run MLflow Project
-          python modelling.py \
-            --data_path=data/personality_preprocessing_dataset.csv \
-            --model_output=models/model.pkl \
-            --test_size=0.2 \
-            --random_state=42
+          mlflow run . -e train -P data_path=data/personality_preprocessing_dataset.csv
 
       - name: Get latest MLflow run_id
         working-directory: ./MLProject
