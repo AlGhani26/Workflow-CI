@@ -61,7 +61,7 @@ with mlflow.start_run():
     # Save and log model
     os.makedirs(os.path.dirname(args.model_output), exist_ok=True)
     joblib.dump(model, args.model_output)
-    mlflow.log_artifact(os.path.abspath(args.model_output))
+    mlflow.log_artifact(local_path=args.model_output, artifact_path="models")
 
     print("✅ Model training selesai dan disimpan:", args.model_output)
 
