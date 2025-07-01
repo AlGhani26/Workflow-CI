@@ -1,22 +1,17 @@
-artifact_path: file:///D:/Document/PROYEK/Dicoding/MSML/Workflow-CI/MLProject/mlruns/861503600981366888/models/m-f3933247fd474d58a7f681cfaf5e432a/artifacts
-flavors:
-  python_function:
-    env:
-      conda: conda.yaml
-      virtualenv: python_env.yaml
-    loader_module: mlflow.sklearn
-    model_path: model.pkl
-    predict_fn: predict
-    python_version: 3.11.9
-  sklearn:
-    code: null
-    pickled_model: model.pkl
-    serialization_format: cloudpickle
-    sklearn_version: 1.4.2
-mlflow_version: 3.1.1
-model_id: m-f3933247fd474d58a7f681cfaf5e432a
-model_size_bytes: 4254447
-model_uuid: m-f3933247fd474d58a7f681cfaf5e432a
-prompts: null
-run_id: 6d58ac71b4e24dca893e2036a7ab1b50
-utc_time_created: '2025-06-30 00:16:02.940493'
+name: personality-classification
+
+conda_env: conda.yaml
+
+entry_points:
+  train:
+    parameters:
+      data_path: {type: str, default: "personality_preprocessing_dataset.csv"}
+      model_output: {type: str, default: "models/personality_model.pkl"}
+      test_size: {type: float, default: 0.2}
+      random_state: {type: int, default: 42}
+    command: >
+      python modelling.py
+      --data_path {data_path}
+      --model_output {model_output}
+      --test_size {test_size}
+      --random_state {random_state}
