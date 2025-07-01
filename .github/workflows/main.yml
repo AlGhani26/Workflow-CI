@@ -36,7 +36,6 @@ jobs:
         shell: bash -l {0}
         working-directory: ./MLProject
         run: |
-          mkdir -p models
           echo "Ensuring data exists for demonstration"
           if [ -f "personality_preprocessing_dataset.csv" ]; then
             echo "Using existing preprocessed data"
