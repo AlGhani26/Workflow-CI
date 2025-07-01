@@ -1,44 +1,56 @@
 name: Workflow CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering
 
 jobs:
-  train_and_upload:
+  train_and_deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Set up job
+        run: echo "Setting up job..."
+
+      - name: Run actions/checkout@v3
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
+      - name: Set up Python 3.12.7
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12.7"
 
-      - name: Install MLflow and dependencies
+      - name: Check Env
         run: |
-          pip install --upgrade pip
-          pip install mlflow==3.1.1 scikit-learn pandas
+          python --version
+          pip --version
+          env | sort
 
-      - name: Prepare dummy dataset
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas numpy scikit-learn mlflow
+
+      - name: Run mlflow project
+        shell: bash -l {0}
         working-directory: ./MLProject
         run: |
           mkdir -p data models
-          echo "feature1,feature2,Personality" > personality_preprocessing_dataset.csv
-          echo "1.0,2.0,0" >> personality_preprocessing_dataset.csv
-          echo "2.0,3.0,1" >> personality_preprocessing_dataset.csv
-          echo "3.0,4.0,0" >> personality_preprocessing_dataset.csv
-          echo "4.0,5.0,1" >> personality_preprocessing_dataset.csv
+          echo "feature1,feature2,Personality" > data/personality_preprocessing_dataset.csv
+          echo "1.0,2.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "2.0,3.0,1" >> data/personality_preprocessing_dataset.csv
+          echo "3.0,4.0,0" >> data/personality_preprocessing_dataset.csv
+          echo "4.0,5.0,1" >> data/personality_preprocessing_dataset.csv
 
-      - name: Run MLflow project (training model)
+          # Run MLflow Project
+          mlflow run . -e train -P data_path=data/personality_preprocessing_dataset.csv
+
+      - name: Get latest MLflow run_id
         working-directory: ./MLProject
         run: |
-          mlflow run . -e train
+          echo "RUN_ID=$(mlflow runs list -v | grep -v 'Run ID' | head -1 | awk '{print $4}')" >> $GITHUB_ENV
+          echo "Latest MLflow run_id: ${{ env.RUN_ID }}"
 
-      - name: Done
-        run: echo "🎉 Workflow CI retraining selesai!"
+      - name: Complete job
+        run: echo "Workflow completed successfully!"

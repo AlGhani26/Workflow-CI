@@ -1,10 +1,12 @@
 name: personality-classification
 
+conda_env: conda.yaml
+
 entry_points:
   train:
     parameters:
-      data_path: {type: str, default: "personality_preprocessing_dataset.csv"}
-      model_output: {type: str, default: "models/personality_model.pkl"}
+      data_path: {type: str}
+      model_output: {type: str, default: models/personality_model.pkl}
       test_size: {type: float, default: 0.2}
       random_state: {type: int, default: 42}
     command: >
