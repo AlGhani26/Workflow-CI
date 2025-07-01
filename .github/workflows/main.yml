@@ -32,6 +32,14 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn mlflow
 
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.12
+          activate-environment: base
+          use-mamba: false
+
       - name: Run mlflow project
         shell: bash -l {0}
         working-directory: ./MLProject
