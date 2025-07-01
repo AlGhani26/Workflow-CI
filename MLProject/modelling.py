@@ -61,6 +61,10 @@ sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
 plt.xlabel("Predicted")
 plt.ylabel("Actual")
 plt.title("Confusion Matrix")
+
+# ⛏️ Fix: pastikan folder diagram ada
+os.makedirs("diagram", exist_ok=True)
+
 cm_path = "diagram/confusion_matrix.png"
 plt.savefig(cm_path)
 mlflow.log_artifact(cm_path)
