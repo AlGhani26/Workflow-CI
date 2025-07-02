@@ -45,7 +45,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 # Start MLflow run
 # =======================
 mlflow.start_run()
-run_id = mlflow.active_run().info.run_id
+run_id = mlflow.active_run().info.run_id  # ✅ Simpan ID saat run masih aktif
 
 model = RandomForestClassifier(random_state=args.random_state)
 model.fit(X_train, y_train)
@@ -82,8 +82,8 @@ try:
 except Exception as e:
     print(f"❌ Model registration failed: {e}")
 
-# Serve instruction
-print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run_id}/model' --port 5000")
-
 # End MLflow run
 mlflow.end_run()
+
+# Serve instruction
+print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run_id}/model' --port 5000")
