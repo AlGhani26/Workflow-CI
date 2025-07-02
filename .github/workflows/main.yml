@@ -32,27 +32,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn mlflow matplotlib seaborn
   
-      - name: Run mlflow project
+      - name: Run MLflow project
         shell: bash -l {0}
         working-directory: ./MLProject
         run: |
-          echo "Ensuring data exists for demonstration"
-          if [ -f "personality_preprocessing_dataset.csv" ]; then
-            echo "Using existing preprocessed data"
-          else
-            echo "Creating sample data for demonstration"
-            echo "feature1,feature2,Personality" > personality_preprocessing_dataset.csv
-            echo "1.0,2.0,0" >> personality_preprocessing_dataset.csv
-            echo "2.0,3.0,1" >> personality_preprocessing_dataset.csv
-            echo "3.0,4.0,0" >> personality_preprocessing_dataset.csv
-            echo "4.0,5.0,1" >> personality_preprocessing_dataset.csv
+          echo "✅ Menjalankan MLflow retraining dari file preprocessing..."
+
+          # Pastikan data hasil preprocessing dari Kriteria 1 tersedia
+          if [ ! -f "personality_preprocessing_dataset.csv" ]; then
+            echo "❌ File preprocessing tidak ditemukan!"
+            exit 1
           fi
-          # Run MLflow Project
-          python modelling.py \
-            --data_path=personality_preprocessing_dataset.csv \
-            --model_output=models/model.pkl \
-            --test_size=0.2 \
-            --random_state=42
+
+          # Jalankan MLflow project sesuai definisi MLProject
+          mlflow run . -e train \
+            -P data_path=personality_preprocessing_dataset.csv \
+            -P model_output=models/personality_model.pkl \
+            -P test_size=0.2 \
+            -P random_state=42
+
 
       - name: Get latest MLflow run_id
         working-directory: ./MLProject
