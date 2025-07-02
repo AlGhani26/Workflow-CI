@@ -22,36 +22,31 @@ args = parser.parse_args()
 # =======================
 # MLflow Setup
 # =======================
-# Gunakan local tracking untuk CI
 mlflow.set_tracking_uri("file:./mlruns")
 mlflow.set_experiment("personality-prediction")
-
-# Optional, autolog without logging full model artifacts
 mlflow.sklearn.autolog(log_models=False)
 
 # =======================
-# Data Load & Preprocess
+# Load Dataset
 # =======================
 df = pd.read_csv(args.data_path)
 
-# Validasi minimal kolom
 if "Personality" not in df.columns:
     raise ValueError("Dataset harus memiliki kolom 'Personality'.")
 
 X = df.drop(columns=["Personality"])
 y = df["Personality"]
 
-# =======================
-# Train-test Split
-# =======================
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=args.test_size, random_state=args.random_state
 )
 
 # =======================
-# Model Training + Logging
+# Start MLflow run
 # =======================
-# with mlflow.start_run() as run:
+mlflow.start_run()
+run_id = mlflow.active_run().info.run_id
+
 model = RandomForestClassifier(random_state=args.random_state)
 model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
@@ -71,21 +66,24 @@ mlflow.log_metric("accuracy", acc)
 mlflow.log_metric("precision", prec)
 mlflow.log_metric("recall", rec)
 
-# Save model to path
+# Save model
 os.makedirs(os.path.dirname(args.model_output), exist_ok=True)
 joblib.dump(model, args.model_output)
 mlflow.log_artifact(local_path=args.model_output, artifact_path="models")
 
 print("✅ Model disimpan ke:", args.model_output)
 
-# Register model ke local registry
+# Register model
 try:
     mlflow.sklearn.log_model(model, "model")
-    model_uri = f"runs:/{run.info.run_id}/model"
+    model_uri = f"runs:/{run_id}/model"
     mlflow.register_model(model_uri=model_uri, name="personality-classification")
-    print(f"✅ Model registered as 'personality-classification'")
+    print("✅ Model registered as 'personality-classification'")
 except Exception as e:
     print(f"❌ Model registration failed: {e}")
 
-# Info serving
-print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run.info.run_id}/model' --port 5000")
+# Serve instruction
+print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run_id}/model' --port 5000")
+
+# End MLflow run
+mlflow.end_run()
