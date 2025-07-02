@@ -20,15 +20,15 @@ jobs:
         with:
           python-version: "3.12.7"
 
-      - name: Check mlflow version
-        run: |
-          which mlflow
-          mlflow --version
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mlflow==2.19.0 scikit-learn pandas matplotlib seaborn
+      
+      - name: Check mlflow version
+        run: |
+          which mlflow
+          mlflow --version
 
       - name: Run MLflow project
         working-directory: ./MLProject
