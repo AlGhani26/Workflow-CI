@@ -51,41 +51,41 @@ X_train, X_test, y_train, y_test = train_test_split(
 # =======================
 # Model Training + Logging
 # =======================
-with mlflow.start_run() as run:
-    model = RandomForestClassifier(random_state=args.random_state)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
+# with mlflow.start_run() as run:
+model = RandomForestClassifier(random_state=args.random_state)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 
-    # Metrics
-    acc = accuracy_score(y_test, y_pred)
-    prec = precision_score(y_test, y_pred, average="macro", zero_division=0)
-    rec = recall_score(y_test, y_pred, average="macro", zero_division=0)
+# Metrics
+acc = accuracy_score(y_test, y_pred)
+prec = precision_score(y_test, y_pred, average="macro", zero_division=0)
+rec = recall_score(y_test, y_pred, average="macro", zero_division=0)
 
-    # Logging
-    mlflow.log_param("data_path", args.data_path)
-    mlflow.log_param("train_size", X_train.shape[0])
-    mlflow.log_param("test_size", X_test.shape[0])
-    mlflow.log_param("features_count", X_train.shape[1])
+# Logging
+mlflow.log_param("data_path", args.data_path)
+mlflow.log_param("train_size", X_train.shape[0])
+mlflow.log_param("test_size", X_test.shape[0])
+mlflow.log_param("features_count", X_train.shape[1])
 
-    mlflow.log_metric("accuracy", acc)
-    mlflow.log_metric("precision", prec)
-    mlflow.log_metric("recall", rec)
+mlflow.log_metric("accuracy", acc)
+mlflow.log_metric("precision", prec)
+mlflow.log_metric("recall", rec)
 
-    # Save model to path
-    os.makedirs(os.path.dirname(args.model_output), exist_ok=True)
-    joblib.dump(model, args.model_output)
-    mlflow.log_artifact(local_path=args.model_output, artifact_path="models")
+# Save model to path
+os.makedirs(os.path.dirname(args.model_output), exist_ok=True)
+joblib.dump(model, args.model_output)
+mlflow.log_artifact(local_path=args.model_output, artifact_path="models")
 
-    print("✅ Model disimpan ke:", args.model_output)
+print("✅ Model disimpan ke:", args.model_output)
 
-    # Register model ke local registry
-    try:
-        mlflow.sklearn.log_model(model, "model")
-        model_uri = f"runs:/{run.info.run_id}/model"
-        mlflow.register_model(model_uri=model_uri, name="personality-classification")
-        print(f"✅ Model registered as 'personality-classification'")
-    except Exception as e:
-        print(f"❌ Model registration failed: {e}")
+# Register model ke local registry
+try:
+    mlflow.sklearn.log_model(model, "model")
+    model_uri = f"runs:/{run.info.run_id}/model"
+    mlflow.register_model(model_uri=model_uri, name="personality-classification")
+    print(f"✅ Model registered as 'personality-classification'")
+except Exception as e:
+    print(f"❌ Model registration failed: {e}")
 
-    # Info serving
-    print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run.info.run_id}/model' --port 5000")
+# Info serving
+print(f"📍 Serve model locally with:\nmlflow models serve -m 'runs:/{run.info.run_id}/model' --port 5000")
