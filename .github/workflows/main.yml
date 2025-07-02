@@ -39,7 +39,6 @@ jobs:
             -P model_output=models/personality_model.pkl \
             -P test_size=0.2 \
             -P random_state=42 \
-            --no-conda
 
       - name: Get latest MLflow run_id
         working-directory: ./MLProject
