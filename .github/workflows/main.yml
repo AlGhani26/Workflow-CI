@@ -1,50 +1,52 @@
-name: Workflow CI
+name: CI MLflow
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+
+env:
+  CSV_URL: "MLProject/personality_preprocessing_dataset.csv"
+  TARGET_VAR: "Personality"
+  TEST_SIZE: 0.2
+  RANDOM_STATE: 42
+  MODEL_OUTPUT: "models/personality_model.pkl"
 
 jobs:
-  train_and_deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      # Checkout repo
+      - uses: actions/checkout@v3
 
+      # Set up Python
       - name: Set up Python 3.12.7
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: "3.12.7"
 
+      # Cek variabel
+      - name: Check Env
+        run: |
+          echo "CSV: $CSV_URL"
+          echo "Target: $TARGET_VAR"
+
+      # Install MLflow
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mlflow==2.19.0 scikit-learn pandas matplotlib seaborn
-      
-      - name: Check mlflow version
-        run: |
-          which mlflow
-          mlflow --version
+          pip install mlflow==2.19.0 pandas numpy scikit-learn joblib matplotlib seaborn
 
-      - name: Run MLflow project
-        working-directory: ./MLProject
+      # Jalankan MLflow Project
+      - name: Run mlflow project
         run: |
-          mlflow run . \
-            -e train \
-            -P data_path=personality_preprocessing_dataset.csv \
-            -P model_output=models/personality_model.pkl \
-            -P test_size=0.2 \
-            -P random_state=42 \
-
-      - name: Get latest MLflow run_id
-        working-directory: ./MLProject
-        run: |
-          echo "RUN_ID=$(mlflow runs list -v | grep -v 'Run ID' | head -1 | awk '{print $4}')" >> $GITHUB_ENV
-          echo "Latest MLflow run_id: ${{ env.RUN_ID }}"
-
-      - name: Complete job
-        run: echo "🎉 Workflow completed successfully!"
+          mlflow run MLProject \
+            -P data_path=$CSV_URL \
+            -P model_output=$MODEL_OUTPUT \
+            -P test_size=$TEST_SIZE \
+            -P random_state=$RANDOM_STATE \
+            --env-manager=local
