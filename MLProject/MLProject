@@ -1,7 +1,7 @@
 name: personality-classification
 
 entry_points:
-  train:
+  main:  # ⬅️ Ganti dari 'train' ke 'main'
     parameters:
       data_path: {type: str}
       model_output: {type: str, default: models/personality_model.pkl}
