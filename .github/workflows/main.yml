@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  CSV_URL: "MLProject/personality_preprocessing_dataset.csv"
+  CSV_URL: "personality_preprocessing_dataset.csv"
   TARGET_VAR: "Personality"
   TEST_SIZE: 0.2
   RANDOM_STATE: 42
